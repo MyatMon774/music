@@ -295,22 +295,23 @@ getRecomendation(){
 }
 isLoading:boolean = false;
 searchData(page:number){
+  
   this.isLoading = true;
-  this.setSelectedMenu('songs')
-  console.log(page)
-  this.mainService.searchData(this.searchQuery,page).subscribe((res)=>{
-    console.log(res)
-    this.list = res.tracks.items;
-    this.isLoading = false;
-    this.ngOnInit();
-    console.log(this.list)
-  })
+  if(this.searchQuery !== ''){
+    this.setSelectedMenu('songs')
+    this.mainService.searchData(this.searchQuery,page).subscribe((res)=>{
+      console.log(res)
+      this.list = res.tracks.items;
+      this.isLoading = false;
+      this.ngOnInit();
+      console.log(this.list)
+    })
+  }
+  else{
+    this.setSelectedMenu('home')
+  }
+ 
 }
-page = 1
-perPage = 10
-next(){
-  this.page = this.page+1;
-  this.searchData(this.page);
-}
+
 
 }
