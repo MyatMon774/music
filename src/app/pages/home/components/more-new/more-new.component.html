@@ -1,0 +1,29 @@
+<div id="more_new">
+    <div class="container">
+        <div class="news">
+            <div class="tool_bar">
+                <label>more news</label>
+                <span>
+                    <button (click)="previous()" [disabled]="current===0" class="btnLeft"><i class="fa-solid fa-chevron-left" [ngStyle]="{color:(current>0)?'#333':'#888'}"></i></button>
+                    <button (click)="next()" [disabled]="current===list.length-1" class="btnRight"><i class="fa-solid fa-chevron-right" [ngStyle]="{color:(current===list.length-1)?'#888':'#333'}"></i></button>
+                </span>
+                
+            </div>
+            <div class="sliders">
+                <div *ngFor="let item of list; let i = index">
+                    <div class="slider" *ngIf="current == i" @fade>
+                        <div class="content" *ngFor="let content of item; let i = index">
+                            <label class="header">{{content.title}}</label>
+                            <span class="secondary_header">Article title</span>
+                            <p>{{content.content | truncateWords:10}}</p>
+                            <span class="date"><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;2 min ago</span>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+           </div>
+    </div>
+   
+    
+</div>

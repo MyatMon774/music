@@ -1,0 +1,53 @@
+
+<div id="trending">
+   
+    <div class="header">
+        <label>Trending</label>
+        <span>
+            <button class="btnLeft"><i class="fa-solid fa-chevron-left" [ngStyle]="{color:(true)?'#888':'#333'}"></i></button>
+            <button class="btnRight"><i class="fa-solid fa-chevron-right" [ngStyle]="{color:(true)?'#333':'#888'}"></i></button>
+        </span>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="image">
+                    <img src="../../../../../assets/images/img1.jpg">
+                </div>
+                <div class="footer">
+                    <label>Lorem Ipsum Dolor </label>
+                    <p>{{loream | truncateWords:6 : true }}</p>
+                    <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;2 min ago</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="image">
+                    <img src="../../../../../assets/images/img2.jpg">
+                </div>
+                <div class="footer">
+                    <label>Lorem Ipsum Dolor </label>
+                    <p>{{loream  | truncateWords:6 : true }}</p>
+                    <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;1 hr ago</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="image">
+                    <img src="../../../../../assets/images/img3.jpg">
+                </div>
+                <div class="footer">
+                    <label>Lorem Ipsum Dolor </label>
+                    <p>{{loream  | truncateWords:6 : true }}</p>
+                    <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;3 hr ago</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    
+</div>

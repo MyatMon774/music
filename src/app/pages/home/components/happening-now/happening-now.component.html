@@ -1,0 +1,60 @@
+<div class="header">
+    <label>happening now</label>
+    <span>
+        <button class="btnLeft"><i class="fa-solid fa-chevron-left" [ngStyle]="{color:(true)?'#888':'#333'}"></i></button>
+        <button class="btnRight"><i class="fa-solid fa-chevron-right" [ngStyle]="{color:(true)?'#333':'#888'}"></i></button>
+    </span>
+    
+</div>
+
+<div class="main_container">
+    
+    <div class="left_one">
+        <img src="../../../../../assets/images/img4.jpg" width="100%" height="100%">
+        <div class="content">
+            <label>Large Article Title</label>
+            <p>{{loream | truncateWords: 15 : true}}</p>
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;1 hr ago</span>
+        </div>
+    </div>
+    <div class="left_two">
+        <img src="../../../../../assets/images/img5.jpg" width="100%" height="100%">
+        <div class="content">
+            <label>Large Article Title</label>
+            <p>{{loream | truncateWords: 15 : true}}</p>
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;1 hr ago</span>
+        </div>
+    </div>
+    <div class="right_one">
+        <div class="image">
+            <img src="../../../../../assets/images/img6.jpg" width="100%" height="100%">
+        </div>
+        <div class="text">
+            <label>Small Article Title</label><br>
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;2 hr ago by <u>Wordnews</u></span>
+        </div>
+       
+        
+
+    </div>
+    <div class="right_two">
+        <div class="image">
+            <img src="../../../../../assets/images/img7.jpg" width="100%" height="100%">
+        </div>
+        <div class="text">
+            <label>Small Article Title</label><br>
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;4 hr ago <u>Days</u></span>
+        </div>
+       
+    </div>
+    <div class="right_three">
+        <div class="image">
+            <img src="../../../../../assets/images/img8.jpg" width="100%" height="100%">
+        </div>
+        <div class="text">
+            <label>Small Article Title</label><br>
+            <span><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;7 hr ago <u>Monica</u></span>
+        </div>
+       
+    </div>
+</div>

@@ -1,0 +1,284 @@
+
+
+<div id="main_container">
+    <div class="side-menu">
+        <div class="profile">
+          <div class="profile-info">
+            <img [src]="user.profilePic" alt="User Profile Picture" class="profile-pic">
+            <div class="profile-details">
+              <h3 class="user-name">{{ user.name }} <i class="fa-solid fa-chevron-down"></i></h3>
+              <label *ngIf="user.premium" class="premium-label">Premium</label> 
+            </div>
+          </div>
+        </div>
+        
+        <nav class="menu">
+            <label class="menu-header">browse</label>
+          <ul>
+            <li *ngFor="let item of menuItems" class="menu-item" (click)="setSelectedMenu(item.name)">
+              <i [class]="item.icon"></i> 
+              <span>{{ item.name }}</span>
+            </li>
+          </ul>
+        </nav>
+      
+        <nav class="bottom-menu">
+          <ul>
+            <li class="menu-header">
+              <span (click)="addPlaylist()" >Your Playlists</span>
+              <i class="fa-solid fa-circle-plus plus-icon" ></i>
+            </li>
+      
+            <li *ngFor="let playlist of playlists" class="playlist-item">
+              <i class="fas fa-play-circle"></i> 
+              <a>{{ playlist }}</a>
+            </li>
+          </ul>
+        </nav>
+    </div>
+    <div id="content">
+        <div class="content-area">
+          <div class="tool-bar">
+            <div class="search-container">
+                <button class="search-icon" (click)="toggleBorder()">
+                  <i class="fa fa-search"></i>
+                </button>
+              
+                <input 
+                  type="text" 
+                  [(ngModel)]="searchQuery" 
+                  placeholder="Search for songs, artists and album" 
+                  class="search-input" 
+                  [@borderToggle]="isInputActive ? 'active' : 'inactive'" 
+                  id="search-input"
+                  (input)="searchData(1)"
+                />
+            </div>
+
+            <div class="notification-container">
+                <button (click)="toggleDropdown()" class="notification-btn">
+                    <i class="fa-regular fa-bell"></i>
+                 
+                  <span *ngIf="notificationCount > 0" class="notification-badge">{{ notificationCount }}</span>
+                </button>
+              
+                <div *ngIf="showDropdown" class="dropdown" [@dropdownAnimation]>
+                   
+                  <div *ngFor="let notification of notifications" class="dropdown-item">
+                    <div class="notification-content">
+                        <div class="imgDiv">
+                            <img [src]="notification.profileImage" alt="Profile Image" class="profile-image">  
+                        </div>
+                        <div class="text">
+                            <label>{{ notification.label }} <br>
+                                <label><b>{{notification.span}}</b></label>
+                               </label>
+                        </div> 
+                        <div class="time">
+                            <span>{{notification.time}}</span>
+                        </div> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+            <div [ngSwitch]="selectedMenu">
+              
+              <div *ngSwitchCase="'home'">
+                <div id="home">
+                   
+                    <div class="row mt-2 twoDiv">
+                        <div class="col-md-6">
+                          <div class="left" [@hoverEffect1]="hoverState1"
+                          (mouseenter)="onMouseEnterDiv1()"
+                          (mouseleave)="onMouseLeaveDiv1()">
+                            <label>GET LOST</label><br>
+                            <span>In your music.</span>
+                            <i class="fa-sharp fa-regular fa-circle-play"></i>
+                          </div>
+                        </div>
+                        <div class="col-md-6" >
+                          <div class="right"  [@hoverEffect2]="hoverState2"
+                          (mouseenter)="onMouseEnterDiv2()"
+                          (mouseleave)="onMouseLeaveDiv2()">
+                            <label>mellow</label><br>
+                            <span>beats.</span>
+                            <i class="fa-sharp fa-regular fa-circle-play"></i>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="row twoList">
+                      <div class="col-md-5 recent">
+                        <label class="heading">Recently Played</label>
+                        <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of items1; let i = index"
+                        (mouseleave)="onMouseLeave1(i)">
+                          <div class="upper_div">
+                                    
+                            <div class="icon_container" [@iconHover1]="isHovered1(i) ? 'visible' : 'hidden'">
+                              <i class="fa-regular fa-circle-play"></i>
+                            </div>
+                         
+                          </div>
+                          <div class="one">
+                            <label>{{item.name}}</label>
+                          </div>
+                          <div class="two">
+                            <label>{{item.artist}}</label>
+                          </div>
+                          <div class="three">
+                            <label>{{item.time}}</label>
+                          </div>
+                          <div class="four">
+                            <i class="fa-sharp fa-regular fa-heart"></i>
+                          </div>
+                          <div class="five">
+                            <i class="fa-solid fa-ellipsis"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-7 recom">
+                        <label>Recommended For you</label>
+                        <div class="main">
+                          <div *ngFor="let item of items" 
+                               class="child"
+                               (mouseenter)="onMouseEnter(item.id)"
+                               (mouseleave)="onMouseLeave()">
+                            
+                            <div class="icon_div">
+                              <div class="icon-container" 
+                              [@iconVisibility]="isHovered(item.id) ? 'visible' : 'hidden'">
+                              <i class="fa fa-play-circle"></i>
+                              </div>
+                            </div>
+                              
+                            
+                            <label>{{item.name}}</label><br>
+                            <span> {{item.artist}}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                </div>
+                
+              </div>
+        
+              <div *ngSwitchCase="'songs'" >
+                <div id="songs">
+                  <!-- <label class="heading">Songs</label><label class="heading pagi"><i class="fa-solid fa-circle-left"></i> &nbsp;&nbsp;<i class="fa-solid fa-circle-right" (click)="next()"></i></label> -->
+                 
+                  @if(!isLoading){
+                    <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of list; let i = index"
+                    (mouseleave)="onMouseLeave1(i)" (click)="play(item)">
+                      <div class="upper_div">      
+                        <div class="icon_container" [@iconHover1]="isHovered1(i) ? 'visible' : 'hidden'">
+                          <i class="fa-regular fa-circle-play"></i>
+                        </div>
+                     
+                      </div>
+                      <div class="one">
+                        <label>{{item.name}}</label>
+                      </div>
+                      <div class="two">
+                        <label>{{item.artists[0].name}}</label>
+                      </div>
+                      <div class="three">
+                        <label>{{item.duration_ms | timeconverter}}</label>
+                      </div>
+                      <div class="four">
+                        <i class="fa-sharp fa-regular fa-heart"></i>
+                      </div>
+                      <div class="five">
+                        <i class="fa-solid fa-ellipsis"></i>
+                      </div>
+                    </div>
+                  }
+                  @else {
+                    <div  class="spinner-container">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                    
+                  }
+                </div>
+                
+              </div>
+        
+              <div *ngSwitchCase="'palylists'">
+                <h2>Playlists</h2>
+              </div>
+              <div *ngSwitchCase="'just for you'">
+                <h2>Just for you</h2>
+              </div>
+              <div *ngSwitchCase="'top charts'">
+                <h2>Top charts</h2>
+              </div>
+        
+              <div *ngSwitchDefault>
+                <h2>Welcome!</h2>
+                <p>Please select a menu item.</p>
+              </div>
+            </div>
+    </div>
+    
+
+
+  </div>
+
+  <div class="player-container">
+    <div class="row">
+      <div class="col-md-4 one">
+        <div class="img">
+          <img [src]="currentTrack.albumCover" width="60" height="60">
+        </div>
+        <div class="text">
+          <label>{{ currentTrack.title }}</label><br>
+          <span>{{ currentTrack.artist }}</span>
+        </div>
+      </div>
+      
+      <div class="col-md-4 two">
+        <i class="fa-solid fa-shuffle" (click)="toggleShuffle()" [ngStyle]="{color:(isShuffle)?'#888':'#fff'}"></i>
+        <i class="fa-solid fa-backward-step" (click)="playPrevious()"></i>
+        <i class="fa-solid " (click)="togglePlayPause()" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
+        <i class="fa-solid fa-forward-step" (click)="playNext()"></i>
+        <i class="fa-solid fa-redo-alt " (click)="toggleRepeat()"  [ngStyle]="{color:(isRepeat)?'#888':'#fff'}"></i>
+     
+      </div>
+      <div class="col-md-4 three">
+        
+        <div class="progress-container">
+          <div class="time-info">
+            {{ formatTime(audio.currentTime) }}
+          </div>
+          
+          <div class="bar">
+            <input 
+            type="range" 
+            [max]="audio.duration" 
+            [value]="audio.currentTime"
+            (input)="onProgressChange($event)"
+            class="progress-bar"
+            #progressBar
+          />
+          </div>
+          <div class="time-info duration">
+            {{ formatTime(audio.duration) }}
+          </div>
+        </div>
+        
+      </div>
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+  

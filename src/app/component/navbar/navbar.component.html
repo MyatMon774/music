@@ -1,0 +1,30 @@
+@if(isShowMenu){
+  <nav class="navbar">
+
+    <div class="logo">
+      <a href="#">logo</a>
+    </div>
+  
+
+    <ul class="nav-links" [ngClass]="{ 'active': isMenuOpen }">
+      <li><a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMenu()">Home</a></li>
+      <li><a routerLink="/about" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMenu()">About</a></li>
+      <li><a routerLink="/services" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMenu()">Services</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMenu()">Contact</a></li>
+      <li><a routerLink="/player" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMenu()">music player</a></li>
+    </ul>
+  
+  
+    <div class="profile">
+      <img src="../../../assets/images/profile.jpg" alt="Profile Image" />
+    </div>
+  
+
+    <div class="menu-toggle" (click)="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+  </nav>
+  
+}
