@@ -51,7 +51,7 @@
                   class="search-input" 
                   [@borderToggle]="isInputActive ? 'active' : 'inactive'" 
                   id="search-input"
-                  (input)="SearchSong()"
+                  (input)="SearchSong($event)"
                 />
             </div>
 
@@ -171,7 +171,7 @@
                   @if(!isLoading){
                     <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of items$ | async;  let i = index"
                     (mouseleave)="onMouseLeave1(i)" (click)="play(item)">
-                      <div class="upper_div" [ngStyle]="{'background-image': 'url(' + item.album.images[0].url + ')'}">      
+                      <div class="upper_div" [ngStyle]="{'background-image': 'url(' + item.album.images[0].url + ')', 'height': '35px', 'background-size': 'cover', 'background-position': 'center'}">      
                         <div class="icon_container" >
                           <i class="fa-regular fa-circle-play"></i>
                         </div>

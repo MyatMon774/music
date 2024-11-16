@@ -46,12 +46,8 @@ export class PlayerComponent implements OnInit{
   
   setSelectedMenu(menu: string) {
     this.selectedMenu = menu;
-    if(this.selectedMenu === 'songs'){
-      this.SearchSong();
-    }
-    else if(this.selectedMenu === 'playlists'){
-      this.SearchSong()
-    }
+  
+   
   }
   menuItems = [
     { id:1, name: 'home', icon: 'fa-solid fa-house' },  
@@ -325,7 +321,7 @@ export class PlayerComponent implements OnInit{
     };
     
     this.currentTrack = obj;
-    console.log(this.currentTrack)
+    console.log(item.album.images[0].url)
     this.loadTrack();
     this.stopPlayback();
     this.togglePlayPause()
@@ -410,7 +406,7 @@ loadRecentlyPlayedTracks() {
   this.mainService.getRecentlyPlayedTracks().subscribe(
     (response: any) => {
       this.recentlyPlayedTracks = response.items; 
-      console.log(response.items)
+      
     },
     (error) => {
       console.error('Error fetching recently played tracks:', error);
@@ -423,7 +419,8 @@ offset : number = 0;
 total : number = 0;
 obsArray: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 items$: Observable<any> = this.obsArray.asObservable();
-SearchSong() {
+SearchSong(event:any) {
+  console.log(event)
   if(this.searchQuery !== ''){
     this.mainService.search(this.searchQuery,0,this.limit).subscribe(
       (response: any) => {
