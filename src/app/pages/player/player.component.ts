@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { backgroundHover1, borderToggle, dropdownAnimation, fadeInOut, hoverEffect1, hoverEffect2, iconHover1, iconVisibility } from '../../util/animations';
 import { TimeConverterPipe } from '../../util/time-converter.pipe';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { BehaviorSubject, forkJoin, Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-player',
@@ -25,7 +28,11 @@ import { TimeConverterPipe } from '../../util/time-converter.pipe';
 })
 export class PlayerComponent implements OnInit{
   list: any;
-  constructor(private mainService: MainService){
+  isLoading: boolean = false;
+  recommendations: any;
+  recentlyPlayedTracks: any;
+  isInfiniteLoading: boolean = false;
+  constructor(private router:Router,private mainService: MainService,private route: ActivatedRoute, private authService: AuthService){
     this.audio.src = this.currentTrack.url;
     this.audio.load();
   }
@@ -39,6 +46,12 @@ export class PlayerComponent implements OnInit{
   
   setSelectedMenu(menu: string) {
     this.selectedMenu = menu;
+    if(this.selectedMenu === 'songs'){
+      this.SearchSong();
+    }
+    else if(this.selectedMenu === 'playlists'){
+      this.SearchSong()
+    }
   }
   menuItems = [
     { id:1, name: 'home', icon: 'fa-solid fa-house' },  
@@ -56,15 +69,118 @@ export class PlayerComponent implements OnInit{
 
   
   ngOnInit(): void {
+    
     this.mainService.isShowMenu.next(false);
-    //this.getRecomendation();
+    
     this.loadTrack();
+    
+    
     this.audio.addEventListener('timeupdate', () => {
       this.updateProgress();
     });
+    this.getRecomandation();
+    this.loadRecentlyPlayedTracks();
+  }
+  player : any;
+  initializeSpotifyPlayer() {
+    this.accessToken = localStorage.getItem('spotify_access_token')?.toString();
+    if (this.accessToken) {
+      // Ensure the Spotify Web Playback SDK script is only loaded once
+      if (!document.getElementById('spotify-player-sdk')) {
+        const script = document.createElement('script');
+        script.src = 'https://sdk.scdn.co/spotify-player.js';
+        script.id = 'spotify-player-sdk'; // Set an ID to check if the script is already loaded
+        document.body.appendChild(script);
+  
+        // Define the callback once the script is loaded
+        script.onload = () => {
+          // This is where we define the global callback
+          window.onSpotifyWebPlaybackSDKReady = () => {
+            const player = new Spotify.Player({
+              name: 'Angular Spotify Player',
+              getOAuthToken: (cb:any) => {
+                cb(this.accessToken);
+              },
+              volume: 0.5,
+            });
+  
+            // Handle player readiness
+            player.addListener('ready', ({ device_id }) => {
+              console.log('The player is ready with device ID:', device_id);
+            });
+  
+            // Handle player errors
+            player.addListener('initialization_error', (e) => {
+              console.error('Initialization Error:', e);
+            });
+            player.addListener('authentication_error', (e) => {
+              console.error('Authentication Error:', e);
+            });
+            player.addListener('account_error', (e) => {
+              console.error('Account Error:', e);
+            });
+            player.addListener('playback_error', (e) => {
+              console.error('Playback Error:', e);
+            });
+  
+            // Connect the player
+            player.connect().then((state) => {
+              if (!state.connected) {
+                console.error('Failed to connect to Spotify player');
+              }
+            });
+  
+            this.player = player; // Store the player instance for later use
+          };
+        };
+      }
+    } else {
+      console.log('Access token not available');
+    }
+  }
+  
+  accessToken: string | undefined = undefined;
+  ngOnDestroy() {
+    if (this.player) {
+      this.player.disconnect();
+    }
   }
   
 
+  playTrack(trackUri: string) {
+    if (this.player) {
+      this.player.play({
+        uris: [trackUri],
+      }).then(() => {
+        console.log('Playback started!');
+      }).catch((error:any) => {
+        console.error('Error playing track:', error);
+      });
+    } else {
+      console.error('Player not ready');
+    }
+  }
+  
+  getRecomandation(){
+   
+    if(localStorage.getItem('spotify_access_token')?.toString() !== undefined ){
+      
+      this.mainService.getRecommendations().subscribe(
+        (data) => {
+          this.recommendations = data.tracks;
+          // console.log(this.recommendations)
+          // console.log(this.recommendations[0].uri)
+          // this.playTrack(this.recommendations[0].uri)
+        },
+        (error) => {
+          console.error('Error fetching recommendations', error);
+        }
+      );
+    }
+    else{
+      this.router.navigate(['login'])
+    }
+  }
 
   /* Search start */
   isInputActive = false;  
@@ -199,7 +315,8 @@ export class PlayerComponent implements OnInit{
     this.audio.load();
   }
   play(item:any){
-    console.log(item.album.images[0].url)
+    
+    console.log(item)
     let obj = {
       title: item.name,
       artist: item.artists[0].name,
@@ -288,30 +405,67 @@ export class PlayerComponent implements OnInit{
   }
   
 /* Player End */
-getRecomendation(){
-  this.mainService.getRecomandation().subscribe((res)=>{
-    console.log(res)
-  })
+
+loadRecentlyPlayedTracks() {
+  this.mainService.getRecentlyPlayedTracks().subscribe(
+    (response: any) => {
+      this.recentlyPlayedTracks = response.items; 
+      console.log(response.items)
+    },
+    (error) => {
+      console.error('Error fetching recently played tracks:', error);
+    }
+  );
 }
-isLoading:boolean = false;
-searchData(page:number){
-  
-  this.isLoading = true;
+activeColor:string = '#DA0E76'
+limit : number = 20;
+offset : number = 0;
+total : number = 0;
+obsArray: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+items$: Observable<any> = this.obsArray.asObservable();
+SearchSong() {
   if(this.searchQuery !== ''){
-    this.setSelectedMenu('songs')
-    this.mainService.searchData(this.searchQuery,page).subscribe((res)=>{
-      console.log(res)
-      this.list = res.tracks.items;
-      this.isLoading = false;
-      this.ngOnInit();
-      console.log(this.list)
-    })
+    this.mainService.search(this.searchQuery,0,this.limit).subscribe(
+      (response: any) => {
+        this.list = response.tracks.items;
+        this.obsArray.next(this.list);
+        this.isLoading = false;
+        this.total = response.tracks.total;
+        console.log(response)
+        this.setSelectedMenu('songs') 
+      },
+      (error) => {
+        console.error('Error fetching recently played tracks:', error);
+      }
+    );
   }
   else{
     this.setSelectedMenu('home')
   }
+}
+onScroll(event: any): void {
+  const element = event.target;
+  const scrollTop = element.scrollTop;
+  const clientHeight = element.clientHeight;
+  const scrollHeight = element.scrollHeight;
+  console.log(scrollHeight - Math.ceil(scrollTop + clientHeight))
+  console.log(this.offset*this.limit)
+  if (scrollHeight - Math.ceil(scrollTop + clientHeight) < 20 && this.offset*this.limit <= this.total && !this.isInfiniteLoading) {
+    
+    this.isInfiniteLoading = true;
+      this.offset = 1 + this.offset;
+      forkJoin([this.items$.pipe(take(1)),  this.mainService.search(this.searchQuery,this.offset,this.limit)]).subscribe((data: any) => {
+        const newArr = [...data[0], ...data[1].tracks.items];
+        this.obsArray.next(newArr);
+        this.isInfiniteLoading = false;
+      });
+  }
+  else if(scrollHeight - Math.ceil(scrollTop + clientHeight) === 0 && this.offset*this.limit > this.total && !this.isInfiniteLoading){
+    this.isInfiniteLoading = true;
+    setTimeout(() => {
+      this.isInfiniteLoading = false;
+    }, 1000);
+  }
  
 }
-
-
 }

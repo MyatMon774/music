@@ -1,4 +1,4 @@
-import { animate, state, style, transition, trigger } from "@angular/animations";
+import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 export const borderToggle =  trigger('borderToggle', [
     state('inactive', style({
       borderColor: 'transparent',
@@ -91,4 +91,6 @@ export const hoverEffect2 =  trigger('hoverEffect2', [
       animate('300ms', style({ opacity: 0 }))
     ])
   ])
+
+  
 

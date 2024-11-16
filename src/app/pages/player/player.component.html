@@ -51,7 +51,7 @@
                   class="search-input" 
                   [@borderToggle]="isInputActive ? 'active' : 'inactive'" 
                   id="search-input"
-                  (input)="searchData(1)"
+                  (input)="SearchSong()"
                 />
             </div>
 
@@ -111,9 +111,9 @@
                     <div class="row twoList">
                       <div class="col-md-5 recent">
                         <label class="heading">Recently Played</label>
-                        <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of items1; let i = index"
-                        (mouseleave)="onMouseLeave1(i)">
-                          <div class="upper_div">
+                        <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of recentlyPlayedTracks; let i = index"
+                        (mouseleave)="onMouseLeave1(i)" (click)="play(item.track)">
+                          <div class="upper_div" >
                                     
                             <div class="icon_container" [@iconHover1]="isHovered1(i) ? 'visible' : 'hidden'">
                               <i class="fa-regular fa-circle-play"></i>
@@ -121,13 +121,13 @@
                          
                           </div>
                           <div class="one">
-                            <label>{{item.name}}</label>
+                            <label>{{item.track.name}}</label>
                           </div>
                           <div class="two">
-                            <label>{{item.artist}}</label>
+                            <label>{{item.track.artists[0].name}}</label>
                           </div>
                           <div class="three">
-                            <label>{{item.time}}</label>
+                            <label>{{item.track.duration_ms | timeconverter}}</label>
                           </div>
                           <div class="four">
                             <i class="fa-sharp fa-regular fa-heart"></i>
@@ -140,12 +140,13 @@
                       <div class="col-md-7 recom">
                         <label>Recommended For you</label>
                         <div class="main">
-                          <div *ngFor="let item of items" 
+                          <div *ngFor="let item of recommendations" 
                                class="child"
                                (mouseenter)="onMouseEnter(item.id)"
                                (mouseleave)="onMouseLeave()">
                             
-                            <div class="icon_div">
+                           @if(item.preview_url !== ''){
+                            <div class="icon_div" (click)="play(item)">
                               <div class="icon-container" 
                               [@iconVisibility]="isHovered(item.id) ? 'visible' : 'hidden'">
                               <i class="fa fa-play-circle"></i>
@@ -154,7 +155,8 @@
                               
                             
                             <label>{{item.name}}</label><br>
-                            <span> {{item.artist}}</span>
+                            <span> {{item.artists[0].name}}</span>
+                           }
                           </div>
                         </div>
                       </div>
@@ -165,14 +167,12 @@
               </div>
         
               <div *ngSwitchCase="'songs'" >
-                <div id="songs">
-                  <!-- <label class="heading">Songs</label><label class="heading pagi"><i class="fa-solid fa-circle-left"></i> &nbsp;&nbsp;<i class="fa-solid fa-circle-right" (click)="next()"></i></label> -->
-                 
+                <div id="songs" (scroll)="onScroll($event)">
                   @if(!isLoading){
-                    <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of list; let i = index"
+                    <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of items$ | async;  let i = index"
                     (mouseleave)="onMouseLeave1(i)" (click)="play(item)">
-                      <div class="upper_div">      
-                        <div class="icon_container" [@iconHover1]="isHovered1(i) ? 'visible' : 'hidden'">
+                      <div class="upper_div" [ngStyle]="{'background-image': 'url(' + item.album.images[0].url + ')'}">      
+                        <div class="icon_container" >
                           <i class="fa-regular fa-circle-play"></i>
                         </div>
                      
@@ -270,14 +270,17 @@
         </div>
         
       </div>
-
-
-
-
-
       </div>
     </div>
   </div>
+
+
+  <div class="loading-dots" *ngIf="isInfiniteLoading">
+    <div [style.backgroundColor]="activeColor"></div>
+    <div [style.backgroundColor]="activeColor"></div>
+    <div [style.backgroundColor]="activeColor"></div>
+</div>
+
 
 
 

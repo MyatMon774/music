@@ -443,6 +443,9 @@
         }
         }
         #songs{
+          margin-top: 20px;
+          height: 600px;
+          overflow-y: auto;
           .pagi{
             float: right;
             font-size: 13px;
@@ -619,11 +622,6 @@
     
   }
 }
-
-
-
-
-   
   }
   
   
@@ -654,4 +652,60 @@
       font-size: 12px;
     }
   }
+
+/*---------- Infinite Loading Start --------- */
+
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    position: absolute; 
+    bottom: 10%;           
+    left: 50%;         
+    transform: translate(-50%, -50%);
+    z-index: 9999999;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+  }
+  
+  .loading-dots div {
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+  }
+  
+  .loading-dots div:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .loading-dots div:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes bounce {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-15px);
+    }
+  }
+  /*---------- Infinite Loading End --------- */
+  
+  /* Reset scrollbar styles to default */
+::-webkit-scrollbar {
+  width: auto;  /* Resets width */
+  height: auto; /* Resets height */
+}
+
+::-webkit-scrollbar-thumb {
+  background: auto; /* Resets the thumb style */
+}
+
+::-webkit-scrollbar-track {
+  background: auto; /* Resets the track style */
+}
+
   

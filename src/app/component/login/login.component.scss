@@ -1,0 +1,40 @@
+/* Container to center the button */
+.main {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    height: 100vh;           /* Full viewport height */
+    margin: 0;               /* Remove default margin */
+    background-color: #f5f5f5; /* Optional, background color for contrast */
+  }
+  
+  /* Button styling */
+  .spotify-login-button {
+    background-color: #1DB954; /* Spotify green */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 30px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    padding: 12px 24px; /* Padding inside the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: inline-flex; /* Aligns content properly */
+    align-items: center; /* Vertically centers text */
+    justify-content: center; /* Horizontally centers text */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+  }
+  
+  .spotify-login-button:hover {
+    background-color: #1ed760; /* Slightly lighter green on hover */
+    transform: scale(1.05); /* Slight scaling effect on hover */
+  }
+  
+  .spotify-login-button:focus {
+    outline: none; /* Removes the focus outline */
+    box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.5); /* Green glow on focus */
+  }
+  
+  .spotify-login-button:active {
+    background-color: #1aa34a; /* Darker green when clicked */
+    transform: scale(1); /* Ensure the button doesn't stay scaled after click */
+  }
+  

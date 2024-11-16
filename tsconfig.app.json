@@ -9,6 +9,9 @@
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "spotify-web-playback.d.ts",
+    "spotify-playback.d.ts"
+    
   ]
 }
