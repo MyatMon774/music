@@ -45,8 +45,18 @@ export class PlayerComponent implements OnInit{
 
   
   setSelectedMenu(menu: string) {
+    console.log(menu)
     this.selectedMenu = menu;
-  
+    if(menu === 'songs'){
+      this.SearchSongByDefault();
+    }
+    if(menu === 'just for you'){
+      this.getRecomandation(8)
+    }
+    if(menu === 'top charts'){
+      this.top();
+    }
+     
    
   }
   menuItems = [
@@ -56,11 +66,10 @@ export class PlayerComponent implements OnInit{
     { id:4, name: 'just for you', icon: 'fa-solid fa-headphones' },
     { id:5, name: 'top charts', icon: 'fa-solid fa-chart-line' }, 
   ];
-  playlists: string[] = ['WorkOut Mix','Chillin\' at Home','Bopping at Adobe','AD 4 Life']; 
+
 
   addPlaylist() {
-    const newPlaylist = `Playlist ${this.playlists.length + 1}`;
-    this.playlists.push(newPlaylist); 
+    
   }
 
   
@@ -74,8 +83,9 @@ export class PlayerComponent implements OnInit{
     this.audio.addEventListener('timeupdate', () => {
       this.updateProgress();
     });
-    this.getRecomandation();
+    this.getRecomandation(3);
     this.loadRecentlyPlayedTracks();
+    this.getAllPlaylist()
   }
   player : any;
   initializeSpotifyPlayer() {
@@ -157,16 +167,15 @@ export class PlayerComponent implements OnInit{
     }
   }
   
-  getRecomandation(){
+  getRecomandation(limit:number){
    
     if(localStorage.getItem('spotify_access_token')?.toString() !== undefined ){
       
-      this.mainService.getRecommendations().subscribe(
+      this.mainService.getRecommendations(limit).subscribe(
         (data) => {
           this.recommendations = data.tracks;
-          // console.log(this.recommendations)
-          // console.log(this.recommendations[0].uri)
-          // this.playTrack(this.recommendations[0].uri)
+          console.log(this.recommendations)
+          
         },
         (error) => {
           console.error('Error fetching recommendations', error);
@@ -429,7 +438,7 @@ SearchSong(event:any) {
         this.isLoading = false;
         this.total = response.tracks.total;
         console.log(response)
-        this.setSelectedMenu('songs') 
+        this.setSelectedMenu('songsm') 
       },
       (error) => {
         console.error('Error fetching recently played tracks:', error);
@@ -439,6 +448,21 @@ SearchSong(event:any) {
   else{
     this.setSelectedMenu('home')
   }
+}
+SearchSongByDefault(){
+  this.mainService.search('a',0,this.limit).subscribe(
+    (response: any) => {
+      this.list = response.tracks.items;
+      this.obsArray.next(this.list);
+      this.isLoading = false;
+      this.total = response.tracks.total;
+      console.log(this.items$)
+       
+    },
+    (error) => {
+      console.error('Error fetching recently played tracks:', error);
+    }
+  );
 }
 onScroll(event: any): void {
   const element = event.target;
@@ -464,5 +488,59 @@ onScroll(event: any): void {
     }, 1000);
   }
  
+}
+onScroll1(event: any): void {
+  const element = event.target;
+  const scrollTop = element.scrollTop;
+  const clientHeight = element.clientHeight;
+  const scrollHeight = element.scrollHeight;
+  console.log(scrollHeight - Math.ceil(scrollTop + clientHeight))
+  console.log(this.offset*this.limit)
+  if (scrollHeight - Math.ceil(scrollTop + clientHeight) < 20 && this.offset*this.limit <= this.total && !this.isInfiniteLoading) {
+    
+    this.isInfiniteLoading = true;
+      this.offset = 1 + this.offset;
+      forkJoin([this.items$.pipe(take(1)),  this.mainService.top(this.limit,this.offset)]).subscribe((data: any) => {
+        const newArr = [...data[0], ...data[1].tracks.items];
+        this.obsArray.next(newArr);
+        this.isInfiniteLoading = false;
+      });
+  }
+  else if(scrollHeight - Math.ceil(scrollTop + clientHeight) === 0 && this.offset*this.limit > this.total && !this.isInfiniteLoading){
+    this.isInfiniteLoading = true;
+    setTimeout(() => {
+      this.isInfiniteLoading = false;
+    }, 1000);
+  }
+ 
+}
+playlists:any;
+getAllPlaylist() {
+  
+    this.mainService.allPlaylist().subscribe(
+      (response: any) => {
+        this.playlists  = response.items
+        console.log(this.playlists)
+      },
+      (error) => {
+        console.error('Error fetching recently played tracks:', error);
+      }
+    );
+ 
+}
+top(){
+  this.mainService.top(this.limit,this.offset).subscribe(
+    (response: any) => {
+      this.list = response.playlists.items;
+      this.obsArray.next(this.list);
+      this.isLoading = false;
+      this.total = response.playlists.total;
+      console.log(this.list)
+     
+    },
+    (error) => {
+      console.error('Error fetching recently played tracks:', error);
+    }
+  );
 }
 }

@@ -46,7 +46,7 @@ export class MainService {
 
   
 
-  getRecommendations(): Observable<any> {
+  getRecommendations(limit:number): Observable<any> {
     const accessToken = localStorage.getItem('spotify_access_token');
     
     if (!accessToken) {
@@ -57,7 +57,7 @@ export class MainService {
     
     const params = {
       seed_genres: 'pop,rock',  // Example of seed genres
-      limit: '3',  // Number of recommendations
+      limit: limit,  // Number of recommendations
     };
 
     return this.http.get(this.apiUrl, { headers, params }).pipe(
@@ -110,5 +110,21 @@ search(query:string='a',offset:number,limit:number): Observable<any> {
 
   return this.http.get(searchUrl, { headers });
 }
+private playlist = 'https://api.spotify.com/v1/me/playlists'
+allPlaylist(){
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('spotify_access_token')}` 
+  });
 
+  return this.http.get(this.playlist, { headers });
+}
+
+
+top(limit:number,offset:number): Observable<any>{
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('spotify_access_token')}` 
+  });
+
+  return this.http.get('https://api.spotify.com/v1/browse/featured-playlists?limit='+limit, { headers });
+}
 }

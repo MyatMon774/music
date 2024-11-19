@@ -16,7 +16,7 @@ export class AuthService {
 
   // Step 1: Redirect to Spotify's Authorization Endpoint
   getAuthUrl(): string {
-    const scopes = 'user-library-read playlist-read-private user-read-playback-state user-modify-playback-state streaming user-read-recently-played';  // Adjust scope as needed
+    const scopes = 'user-top-read user-library-read playlist-read-private user-read-playback-state user-modify-playback-state streaming user-read-recently-played';  // Adjust scope as needed
     return `${this.authUrl}?response_type=token&client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&scope=${encodeURIComponent(scopes)}`;
   }
 

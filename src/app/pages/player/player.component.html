@@ -31,7 +31,7 @@
       
             <li *ngFor="let playlist of playlists" class="playlist-item">
               <i class="fas fa-play-circle"></i> 
-              <a>{{ playlist }}</a>
+              <a>{{ playlist.name }}</a>
             </li>
           </ul>
         </nav>
@@ -205,16 +205,76 @@
                 </div>
                 
               </div>
-        
+              <div *ngSwitchCase="'songsm'" >
+                <div id="songs" (scroll)="onScroll($event)">
+                  @if(!isLoading){
+                    <div class="main" (mouseenter)="onMouseEnter1(i)" *ngFor="let item of items$ | async;  let i = index"
+                    (mouseleave)="onMouseLeave1(i)" (click)="play(item)">
+                      <div class="upper_div" [ngStyle]="{'background-image': 'url(' + item.album.images[0].url + ')', 'height': '35px', 'background-size': 'cover', 'background-position': 'center'}">      
+                        <div class="icon_container" >
+                          <i class="fa-regular fa-circle-play"></i>
+                        </div>
+                     
+                      </div>
+                      <div class="one">
+                        <label>{{item.name}}</label>
+                      </div>
+                      <div class="two">
+                        <label>{{item.artists[0].name}}</label>
+                      </div>
+                      <div class="three">
+                        <label>{{item.duration_ms | timeconverter}}</label>
+                      </div>
+                      <div class="four">
+                        <i class="fa-sharp fa-regular fa-heart"></i>
+                      </div>
+                      <div class="five">
+                        <i class="fa-solid fa-ellipsis"></i>
+                      </div>
+                    </div>
+                  }
+                  @else {
+                    <div  class="spinner-container">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    </div>
+                    
+                  }
+                </div>
+                
+              </div>
               <div *ngSwitchCase="'palylists'">
                 <h2>Playlists</h2>
               </div>
               <div *ngSwitchCase="'just for you'">
-                <h2>Just for you</h2>
+                  <div class="row" id="recomendations">
+                    <div class="col-md-3 mb-3 " *ngFor="let item of recommendations" (click)="play(item)">
+                      <div class="card h-100" >
+                        <img [src]="item.album.images[0].url" width="100%" height="200px">
+                        <div>
+                          <label>{{item.name}}</label>
+                          <p> {{item.artists[0].name}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
               </div>
-              <div *ngSwitchCase="'top charts'">
-                <h2>Top charts</h2>
+              <div *ngSwitchCase="'top charts'" >
+                <div class="row" id="recomendations">
+                  <div class="col-md-3 mb-3 " *ngFor="let item of list" (click)="play(item)">
+                    <div class="card h-100" >
+                      <img [src]="item.images[0].url" width="100%" height="200px">
+                      <div>
+                        <label>{{item.name}}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
               </div>
+             
         
               <div *ngSwitchDefault>
                 <h2>Welcome!</h2>
